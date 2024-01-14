@@ -117,6 +117,14 @@ func WithOutput(output io.Writer) Option {
 }
 
 func WithOutputPath(path string, fileName string) Option {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		// 目录不存在，创建目录
+		err := os.MkdirAll(path, os.ModePerm)
+		if err != nil {
+			fmt.Println("Error creating directory:", err)
+		}
+		fmt.Println("Directory created successfully:", path)
+	}
 	fd, err := os.OpenFile(path+fileName, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		panic("create file test.log failed")
